@@ -54,7 +54,6 @@ class InternetResourceModel(BaseModel):
 
 
 class ArticlesCollectionModel(BaseModel):
-
     """
     Модель сборника статей:
 
@@ -78,3 +77,61 @@ class ArticlesCollectionModel(BaseModel):
     publishing_house: str
     year: int = Field(..., gt=0)
     pages: str
+
+
+class ThesisModel(BaseModel):
+    """
+    Модель диссертации:
+
+    .. code-block::
+
+        ThesisModel(
+            author="Иванов И.М.",
+            title="Наука как искусство",
+            degree="кандидат",
+            field="информатика",
+            field_code="08.00.00",
+            city="СПб.",
+            year=2020,
+            pages=999,
+        )
+    """
+
+    author: str
+    title: str
+    degree: str
+    field: str
+    field_code: str
+    city: str
+    year: int = Field(..., gt=0)
+    pages: int = Field(..., gt=0)
+
+
+class RegulationActModel(BaseModel):
+    """
+    Модель нормативного акта:
+
+    .. code-block::
+
+        RegulationActModel(
+            type="постановление",
+            title="Наука как искусство",
+            accept_date="01.01.2021",
+            number="01.01.01",
+            official_source="Официальный источник",
+            publication_year=2021,
+            version=1,
+            article_number=1,
+            edition="3-е",
+        )
+    """
+
+    type: str
+    title: str
+    accept_date: str
+    number: str
+    official_source: str
+    publication_year: int = Field(..., gt=1900)
+    version: int
+    article_number: int
+    edition: str

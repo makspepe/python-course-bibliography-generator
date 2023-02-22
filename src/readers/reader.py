@@ -7,7 +7,13 @@ from typing import Type
 import openpyxl
 from openpyxl.workbook import Workbook
 
-from formatters.models import BookModel, InternetResourceModel, ArticlesCollectionModel
+from formatters.models import (
+    BookModel,
+    InternetResourceModel,
+    ArticlesCollectionModel,
+    RegulationActModel,
+    ThesisModel,
+)
 from logger import get_logger
 from readers.base import BaseReader
 
@@ -88,6 +94,62 @@ class ArticlesCollectionReader(BaseReader):
             "year": {5: int},
             "pages": {6: str},
         }
+class RegulationActReader(BaseReader):
+    """
+    Чтение модели нормативного акта.
+    """
+
+    @property
+    def model(self) -> type[RegulationActModel]:
+        return RegulationActModel
+
+    @property
+    def sheet(self) -> str:
+        return " Закон, нормативный акт и т.п."
+
+    @property
+    def attributes(self) -> dict:
+        """
+        Атрибуты модели нормативного акта.
+        """
+        return {
+            "type": {0: str},
+            "title": {1: str},
+            "accept_date": {2: date},
+            "number": {3: str},
+            "official_source": {4: str},
+            "publication_year": {5: int},
+            "version": {6: int},
+            "article_number": {7: int},
+            "edition": {8: date}
+        }
+
+
+class ThesisReader(BaseReader):
+    """
+    Чтение модели диссертации
+    """
+
+    @property
+    def model(self) -> Type[ThesisModel]:
+        return ThesisModel
+
+    @property
+    def sheet(self) -> str:
+        return "Диссертация"
+
+    @property
+    def attributes(self) -> dict:
+        return {
+            "author": {0: str},
+            "title": {1: str},
+            "degree": {2: str},
+            "field": {3: str},
+            "field_code": {4: str},
+            "city": {5: str},
+            "year": {6: int},
+            "pages": {7: int},
+        }
 
 
 class SourcesReader:
@@ -96,10 +158,12 @@ class SourcesReader:
     """
 
     # зарегистрированные читатели
-    readers = [
+    readers: list[type[BaseReader]]  = [
         BookReader,
         InternetResourceReader,
         ArticlesCollectionReader,
+        RegulationActReader,
+        ThesisReader
     ]
 
     def __init__(self, path: str) -> None:

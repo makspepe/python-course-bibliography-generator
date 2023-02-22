@@ -2,15 +2,26 @@
 Тестирование функций чтения данных из источника.
 """
 from typing import Any
+from openpyxl.workbook import Workbook
 
 import pytest
 
-from formatters.models import BookModel, InternetResourceModel, ArticlesCollectionModel
+
+from formatters.models import (
+    BookModel,
+    InternetResourceModel,
+    ArticlesCollectionModel,
+    RegulationActModel,
+    ThesisModel,
+)
+
 from readers.reader import (
     BookReader,
-    SourcesReader,
     InternetResourceReader,
     ArticlesCollectionReader,
+    RegulationActReader,
+    ThesisReader,
+    SourcesReader,
 )
 from settings import TEMPLATE_FILE_PATH
 
@@ -21,7 +32,7 @@ class TestReaders:
     """
 
     @pytest.fixture
-    def workbook(self) -> Any:
+    def workbook(self) -> Workbook:
         """
          Получение объекта тестовой рабочей книги.
         :return:
@@ -29,7 +40,7 @@ class TestReaders:
 
         return SourcesReader(TEMPLATE_FILE_PATH).workbook
 
-    def test_book(self, workbook: Any) -> None:
+    def test_book(self, workbook: Workbook) -> None:
         """
         Тестирование чтения книги.
 
@@ -55,7 +66,7 @@ class TestReaders:
         # проверка общего количества атрибутов
         assert len(model_type.schema().get("properties", {}).keys()) == 7
 
-    def test_internet_resource(self, workbook: Any) -> None:
+    def test_internet_resource(self, workbook: Workbook) -> None:
         """
         Тестирование чтения интернет-ресурса.
 
@@ -78,7 +89,7 @@ class TestReaders:
         # проверка общего количества атрибутов
         assert len(model_type.schema().get("properties", {}).keys()) == 4
 
-    def test_articles_collection(self, workbook: Any) -> None:
+    def test_articles_collection(self, workbook: Workbook) -> None:
         """
         Тестирование чтения сборника статей.
 
@@ -104,6 +115,61 @@ class TestReaders:
         # проверка общего количества атрибутов
         assert len(model_type.schema().get("properties", {}).keys()) == 7
 
+    def test_regulation_act(self, workbook: Workbook) -> None:
+        """
+        Тестирование чтения нормативного акта.
+
+        :param workbook: Объект тестовой рабочей книги.
+        """
+
+        models = RegulationActReader(workbook).read()
+
+        assert len(models) == 1
+        model = models[0]
+
+        model_type = RegulationActModel
+
+        assert isinstance(model, model_type)
+        assert model.type == "Конституция Российской Федерации"
+        assert model.title == "Наука как искусство"
+        assert model.accept_date == "01.01.2000"
+        assert model.number == "1234-56"
+        assert model.official_source == "Парламентская газета"
+        assert model.publication_year == 2020
+        assert model.version == 5
+        assert model.article_number == 15
+        assert model.edition == "11.09.2002"
+
+        # проверка общего количества атрибутов
+        assert len(model_type.schema().get("properties", {}).keys()) == 9
+
+    def test_thesis(self, workbook: Workbook) -> None:
+        """
+        Тестирование чтения диссертации.
+
+        :param workbook: Объект тестовой рабочей книги.
+        """
+
+        models = ThesisReader(workbook).read()
+
+        assert len(models) == 1
+        model = models[0]
+
+        model_type = ThesisModel
+
+        assert isinstance(model, model_type)
+        assert model.author == "Иванов И.М."
+        assert model.title == "Наука как искусство"
+        assert model.degree == "д-р. / канд."
+        assert model.field == "экон."
+        assert model.field_code == "01.01.01"
+        assert model.city == "СПб."
+        assert model.year == 2020
+        assert model.pages == 199
+
+        # проверка общего количества атрибутов
+        assert len(model_type.schema().get("properties", {}).keys()) == 8
+
     def test_sources_reader(self) -> None:
         """
         Тестирование функции чтения всех моделей из источника.
@@ -111,7 +177,7 @@ class TestReaders:
 
         models = SourcesReader(TEMPLATE_FILE_PATH).read()
         # проверка общего считанного количества моделей
-        assert len(models) == 8
+        assert len(models) == 10
 
         # проверка наличия всех ожидаемых типов моделей среди типов считанных моделей
         model_types = {model.__class__.__name__ for model in models}
@@ -119,4 +185,6 @@ class TestReaders:
             BookModel.__name__,
             InternetResourceModel.__name__,
             ArticlesCollectionModel.__name__,
+            RegulationActModel.__name__,
+            ThesisModel.__name__,
         }
