@@ -10,14 +10,14 @@
 -   Добавлены автотесты
 -   Обновлена документация
 
-![img](media/docker_1.png)
+![](https://raw.githubusercontent.com/akspepe/python-course-bibliography-generator/media/docker_1.png)
 
 ### Стиль ГОСТ
 
-![img](media/gost.png)
+![](https://raw.githubusercontent.com/akspepe/python-course-bibliography-generator/media/gost.png)
 
 
 ### Стиль APA
 
-![img](media/apa.png)
+![](https://raw.githubusercontent.com/akspepe/python-course-bibliography-generator/media/apa.png)
 
