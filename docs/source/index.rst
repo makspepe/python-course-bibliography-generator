@@ -7,6 +7,7 @@
 
 Поддерживаемые стили цитирования:
     - ГОСТ Р 7.0.5-2008
+    - American Psychological Association (APA)
 
 Установка
 =========
@@ -157,4 +158,14 @@
 ===============
 
 .. automodule:: formatters.models
+    :members:
+
+Генерация стилей ГОСТ
+========================
+..  automodule:: formatters.styles.gost
+    :members:
+
+Генерация стилей APA
+=====================
+..  automodule:: formatters.styles.apa
     :members:
